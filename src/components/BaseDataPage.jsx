@@ -6,6 +6,8 @@ import {Text, View} from "react-native";
 import {Part} from "./Part";
 import {getGraphFieldCfg} from "../Utils";
 import BaseLineChart from "./BaseLineChart";
+import {BaseIndicator} from "./BaseIndicator";
+import BasePieChart from "./BasePieChart";
 var getGraphModelName = (typeId,ag, valueField = 'value', hierarchies = ['indicator', null]) => YearsModel.getByTypeId(typeId, {
     aggregate: ag,
     groupFieldVar: 'gr',
@@ -22,12 +24,12 @@ const getIndicatorsModelName = (typeId, valueField = 'value', typeAg) => YearsMo
 }).getName();
 
 export const BaseDataPage = (props) => {
-    const {graphs, id, title, indicators, details, pies, tables} = props.data;
+    const {graphs, id, title, indicators, details, pies, tables, typeId} = props.data;
     const buildIndicatorRows = () => {
         if (indicators) {
             var k = 0;
-            return indicators.map(r => <div className="row">
-                {r.map(x => <CovidIndicator
+            return indicators.map(r => <View className="row">
+                {r.map(x => <BaseIndicator
                     key={'ind1' + (k++)}
                     modelName={getIndicatorsModelName(x.typeId || typeId, x.valueField, x.type)}
                     type={x.type}
@@ -39,7 +41,7 @@ export const BaseDataPage = (props) => {
                     desc={x.desc}
                     percent={x.percent}
                     vardate={x.vardate} />)}
-            </div>);
+            </View>);
         }
     }
 
@@ -83,7 +85,7 @@ export const BaseDataPage = (props) => {
     const buildPies = () => {
         if (pies) {
             return pies.map(pie => {
-                var res = <PiePanel
+                var res = <BasePieChart
                     aggregate={pie.aggregate}
                     typeId={pie.typeId || typeId}
                     field={pie.field}
@@ -92,13 +94,6 @@ export const BaseDataPage = (props) => {
                     colors={pie.colors || pie.fields.map(x => x.color)}
                     title={pie.title}
                 />;
-
-                if (pie.title) {
-                    res = <div className="panel">
-                        {/*<PieDate ag={pie.aggregate} title={pie.title}/>*/}
-                        {res}
-                    </div>
-                }
 
                 return res;
             });

@@ -1,26 +1,29 @@
-import {LineChart} from "react-native-chart-kit";
+import {StackedBarChart} from "react-native-chart-kit";
 import {View, Dimensions} from "react-native";
 import ModelComponent from "./ModelComponent";
+import Model from "../model/Model";
 
 const defaultColors = [
     '#FFF',
     '#000000',
     '#0330db'
 ]
-class BaseLineChart extends ModelComponent {
 
+
+const cats = ['day', 'day', 'month'],
+    catsValue = ['day', 'date_day', 'date_mounth'];
+class BaseLineChart extends ModelComponent {
     constructor(p) {
         super(p);
-
         this.refChart = this.refChart.bind(this);
     }
 
     getCategoryField() {
-        return this.state.categoryField || '_category';
+        return this.state.categoryField || cats[Model.getVariable()];
     }
 
     getCategoryFieldValue() {
-        return this.getCategoryField();
+        return this.state.categoryField || catsValue[Model.getVariable()];
     }
 
     showLegend() {
@@ -113,17 +116,49 @@ class BaseLineChart extends ModelComponent {
         return Object.assign(legend, this.state.legend);
     }
 
+    getGraphData() {
+        console.log('getGraphData check')
+        console.log(this.getData())
+        let colors = (this.state.colors || []).concat(defaultColors),
+            graphData = this.getData(),
+            modelCfg = this.model.getConfig(),
+            graphs = this.state.graphs.filter(x => !x.valueField || graphData.find(d => d[x.valueField])).map((x, i) => {
+                var fill = colors[i];
+                if (fill) {
+                    var cindx = fill.indexOf('-color)')
+                    if (cindx >= 0 && fill.indexOf('-light-color)') < 0) {
+                        //fill = fill.substring(0, cindx) + '-light-color)';
+                    }
+
+                    if (this.state.gradient !== false) {
+                        fill = [fill, 'transparent'];
+                    }
+
+                    x = Object.assign({
+                        "valueField": "val" + i
+                    }, x)
+                }
+                return x;
+            });
+        console.log('graphs in graphs')
+        console.log(graphs)
+        let valueFields = graphs.map(x => x.valueField);
+        graphData.forEach(x => valueFields.forEach(vf => {
+            if (!x[vf]) {
+                x[vf] = 0;
+            }
+        }))
+        return [graphData, valueFields];
+    }
     refChart(el) {
         if (!el) {
             return;
         }
 
-        let colors = (this.state.colors || []).concat(defaultColors),
+       let colors = (this.state.colors || []).concat(defaultColors),
             data = this.getData(),
             modelCfg = this.model.getConfig(),
             graphs = this.state.graphs.filter(x => !x.valueField || data.find(d => d[x.valueField])).map((x, i) => {
-                console.log('Hi')
-                console.log(x)
                 var fill = colors[i];
                 if (fill) {
                     var cindx = fill.indexOf('-color)')
@@ -160,8 +195,6 @@ class BaseLineChart extends ModelComponent {
                     "fillColors": fill,
                     "valueField": "val" + i
                 }, x);
-                console.log('Bye')
-                console.log(x);
 
                 if (!x.bullet && x.type !== 'column') {
                     x = Object.assign({
@@ -176,44 +209,39 @@ class BaseLineChart extends ModelComponent {
                 }
 
                 return x;
-            }),
-            valueFields = graphs.map(x => x.valueField);
-        console.log('valueFields')
-        console.log(valueFields)
+            });
+        console.log('graphs in chart')
+        console.log(graphs)
+        let valueFields = graphs.map(x => x.valueField);
         data.forEach(x => valueFields.forEach(vf => {
             if (!x[vf]) {
                 x[vf] = 0;
             }
         }))
-        console.log('Data itself')
-        console.log(data)
+        // console.log('Data itself')
+        // console.log(data)
     }
 
     render() {
         let key = this.state['model_key_' + this.getModelName()];
+        const [graphData, valueFields] = this.getGraphData();
+        const smt =  graphData.map(x =>
+                valueFields.map(field => x[field])
+            )
+        const data = {
+            labels: graphData.map(x => x.day),
+            legend: valueFields.map(field => field),
+            data: graphData.map((x, i) =>
+                valueFields.map(field => x[field])
+            ),
+            barColors: ["#dfe4ea", "#ced6e0", "#a4b0be"]
+        };
         return (
-            <View key={key} ref={this.refChart}>
-                <LineChart
-                    data={{
-                        labels: ["January", "February", "March", "April", "May", "June"],
-                        datasets: [
-                            {
-                                data: [
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100
-                                ]
-                            }
-                        ]
-                    }}
-                    width={Dimensions.get("window").width} // from react-native
+            <View key={key}>
+                <StackedBarChart
+                    data={data}
+                    width={Dimensions.get("window").width}
                     height={220}
-                    yAxisLabel="$"
-                    yAxisSuffix="k"
-                    yAxisInterval={1} // optional, defaults to 1
                     chartConfig={{
                         backgroundColor: "#e26a00",
                         backgroundGradientFrom: "#fb8c00",
@@ -229,11 +257,6 @@ class BaseLineChart extends ModelComponent {
                             strokeWidth: "2",
                             stroke: "#ffa726"
                         }
-                    }}
-                    bezier
-                    style={{
-                        marginVertical: 8,
-                        borderRadius: 16
                     }}
                 />
             </View>
