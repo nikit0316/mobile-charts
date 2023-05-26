@@ -81,9 +81,6 @@ class BasePieChart extends ModelComponent {
 
     render() {
         const data = this.getPieChartData()
-        console.log('Pie chard data Oh wow!')
-        console.log(data)
-
         return <View>
             <PieChart
                 data={data}

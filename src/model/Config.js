@@ -1,4 +1,4 @@
-import { default as covidConfig } from "./covid/Config"
+import { default as covidConfig } from "./data/Config"
 
 const Config = {
     covid: covidConfig

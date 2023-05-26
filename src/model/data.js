@@ -1,8 +1,8 @@
-import cert_create from "./covid/cert_create";
-import cert_create_graph from "./covid/cert_create_graph";
-import change_mail_alien from './covid/change_mail_alien';
-import medotvod_cert_create_day from "./covid/medotvod_cert_create_day";
-import tech_effective from "./covid/tech_effective";
+import cert_create from "./data/cert_create";
+import cert_create_graph from "./data/cert_create_graph";
+import change_mail_alien from './data/change_mail_alien';
+import medotvod_cert_create_day from "./data/medotvod_cert_create_day";
+import tech_effective from "./data/tech_effective";
 
 const data =
     {

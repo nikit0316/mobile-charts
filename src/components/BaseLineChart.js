@@ -117,8 +117,6 @@ class BaseLineChart extends ModelComponent {
     }
 
     getGraphData() {
-        console.log('getGraphData check')
-        console.log(this.getData())
         let colors = (this.state.colors || []).concat(defaultColors),
             graphData = this.getData(),
             modelCfg = this.model.getConfig(),
@@ -140,8 +138,6 @@ class BaseLineChart extends ModelComponent {
                 }
                 return x;
             });
-        console.log('graphs in graphs')
-        console.log(graphs)
         let valueFields = graphs.map(x => x.valueField);
         graphData.forEach(x => valueFields.forEach(vf => {
             if (!x[vf]) {
@@ -210,8 +206,6 @@ class BaseLineChart extends ModelComponent {
 
                 return x;
             });
-        console.log('graphs in chart')
-        console.log(graphs)
         let valueFields = graphs.map(x => x.valueField);
         data.forEach(x => valueFields.forEach(vf => {
             if (!x[vf]) {

@@ -28,6 +28,8 @@ export default function App() {
                           iconName = focused ? 'home-outline' : 'home-outline'
                       } else if (route.name === 'Settings') {
                           iconName = focused ? 'cog-outline' : 'cog-outline'
+                      } else if (route.name ==='List') {
+                          iconName = focused ? 'apps-outline' : 'apps-outline'
                       }
 
                       // You can return any component that you like here!

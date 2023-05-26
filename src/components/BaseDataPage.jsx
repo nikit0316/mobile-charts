@@ -1,7 +1,4 @@
 import Model, { PlainModel, YearsModel } from '../model/Model';
-import {
-    LineChart,
-} from "react-native-chart-kit";
 import {Text, View} from "react-native";
 import {Part} from "./Part";
 import {getGraphFieldCfg} from "../Utils";

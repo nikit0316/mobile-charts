@@ -1,17 +1,13 @@
-import {View, ScrollView} from "react-native";
+import {View, ScrollView, StyleSheet} from "react-native";
 import {BaseDataPage} from "../components/BaseDataPage";
 import {YearsModel} from "../model/Model";
 
 const desc =[
-    ["Всего замен иностранных почт по взрослым УЗ", "Количество замен иностранных почт по взрослым УЗ за период"],
-    ["Всего замен иностранных почт с созданием почты Mail.ru по взрослым УЗ", "Количество замен иностранных почт с созданием почты Mail.ru по взрослым УЗ за период"],
-    ["Всего замен иностранных почт с привязкой другой почты по взрослым УЗ", "Количество замен иностранных почт с привязкой другой почты по взрослым УЗ за период"]
+    ["Напитки за все время"]
 ]
 
 const indicators = [
-    ["Замен иностранных почт по ВУЗ", "Количество общего количества регистраций ДУЗ за период"],
-    ["Замен иностранных почт с созданием почты Mail.ru по ВУЗ", "Количество регистраций ДУЗ через домен Mail.ru"],
-    ["Замен иностранных почт с привязкой другой почты по ВУЗ", "Коэффициент прироста общего количества регистраций ДУЗ за период"],
+    ["Напитки"]
 ].map((x, i) => {
     return [
         {
@@ -20,79 +16,78 @@ const indicators = [
             field: x[0],
             desc: desc[i][0],
             compareUnit: "",
+            valueField: "value_abs",
             vardate: false,
         },
         {
-            type: "sum_all",
+            type: "sum",
             filter: (x) => x.indicator === x,
             field: x[0],
             desc: desc[i][1],
             prirost: true,
+            valueField: "value_abs",
             compareUnit: "",
             vardate: false,
         },
     ];
 });
 const stackedGraphs = [
-    ["Замен иностранных почт с созданием почты Mail.ru по ВУЗ", "#3751d2", true],
-    ["Замен иностранных почт с привязкой другой почты по ВУЗ", "#F78641", true],
-    ["Total (количество замен)", "rgba(0, 0, 0, 0)", false],
+    ["Еда", "#4fa2f0"],
+    ["Одежда", "#F78641"],
+    ["Напитки", "#3751d2"],
 ];
 
-const stackedGraphs2 = [
-    ["Успешное создание почты Mail.ru", "#3751d2", true],
-    ["Техническая эффективность интеграции ЕПГУ - ВК (Замены почты)", "#3751d2", false],
-    ["Отправленные запросы на создание почты Mail.ru", "#3751d2", false]
-];
 export const ScrollHomeScreen = () => {
     const data = {
-        id: "change_mail_alien",
+        id: "medotvod_cert_create_day",
         title: "Количество замен иностранной почты",
         indicators: indicators,
-        typeId: "change_mail_alien",
+        typeId: "medotvod_cert_create_day",
         graphs: [
             {
                 labelTop: true,
-                title: "Количество замен иностранной почты",
+                title: "Продажи по категориям",
                 graphs: stackedGraphs,
                 stacked: true,
-                typeId: "change_mail_alien",
-                valueField: "value",
-            },
-                {
-                    title: 'Техническая эффективность',
-                    graphs: stackedGraphs2,
-                    stacked: true,
-                    typeId: 'tech_effective',
-                    valueField: 'value'
-                },
+                typeId: "medotvod_cert_create_day",
+                valueField: "value_abs",
+            }
         ],
         pies: [
             {
-                title: "Соотношение количества замен иностранных почт в разрезе почты",
-                field: "value",
+                title: "Соотношение продаж напитков к еде",
+                field: "value_abs",
                 aggregate: "sum",
                 fields: [
                     {
-                        text: "С созданием почты Mail.ru",
-                        name: "Замен иностранных почт с созданием почты Mail.ru по ВУЗ",
+                        text: "Еда",
+                        name: "Еда",
                     },
                     {
-                        text: "С привязкой другой почты",
-                        name: "Замен иностранных почт с привязкой другой почты по ВУЗ",
+                        text: "Напитки",
+                        name: "Напитки",
                     },
                 ],
                 colors: ["#16A086", "#FF8A00", "#4E73BE"],
-                typeId: "change_mail_alien",
+                typeId: "medotvod_cert_create_day",
                 category: "indicator",
             },
         ]
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={[
+            styles.container,
+
+        ]}>
             <BaseDataPage data={data}>
             </BaseDataPage>
         </ScrollView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 5,
+    },
+});

@@ -29,7 +29,7 @@ if (day / 10 < 1) {
 }
 let firstDate = date.getFullYear() + '' + firstMonth + '' + day;
 date = date.getFullYear() + '' + month + '' + day;*/
-var datesCal = [20220101, 20230505];
+var datesCal = [20220506, 20220508];
 
 var groupVariable = 1;
 
@@ -200,9 +200,6 @@ export default class Model {
     }
 
     static getByTypeId(typeId, cfg) {
-        console.log('TypeId and cfg')
-        console.log(typeId)
-        console.log(cfg)
         if (!cfg) {
             cfg = {};
         }
@@ -382,8 +379,6 @@ export default class Model {
         if (!cfg.fetch) {
             if ( 32 !== '35') {
                 cfg.fetch = Promise.resolve(jsondata[cfg.typeId]);
-                console.log('fetch')
-                console.log(cfg.fetch)
             } else {
                 if (!fetchs[cfg.typeId]) {
                     var body = new FormData();
